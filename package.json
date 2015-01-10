@@ -4,17 +4,18 @@
   "description": "Extreme tech training",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo no test specified exit 1"
   },
-  "engine": {
-    "node":"0.10.x",
-    "npm":"1.4.x"
-  }
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.4.x"
+  },
   "author": "Manish Kumar",
-  "license": "ISC",
+  "license": "BSD-2-Clause",
   "dependencies": {
-    "express": "^4.10.7",
-    "jade": "^1.8.2",
-    "mongoose": "^3.8.21"
+    "jade": "~1.8.2",
+    "express": "~4.10.7",
+    "stylus": "~0.49.3",
+    "mongoose": "~3.8.21"
   }
 }
