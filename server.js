@@ -32,7 +32,14 @@ app.use(stylus.middleware(
 ));
 app.use(express.static(__dirname + '/public'));
 
-mongoose.connect('mongodb://localhost/MEANVision');
+
+if(env === 'development') {
+	mongoose.connect('mongodb://localhost/MEANVision');	
+} else {
+	mongoose.connect('mongodb://maniishkumar:meanvision@ds031651.mongolab.com:31651/meanvision');	
+}
+//mongoose.connect('mongodb://localhost/MEANVision');
+
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error.......'));
 //open the database for once
@@ -61,7 +68,7 @@ app.get('*', function (req, res) {
 	});
 })
 
-var port = 3003
+var port = process.env.PORT || 3003
 
 app.listen(port);
 console.log("MEANVision Server started running on: "+ port);
