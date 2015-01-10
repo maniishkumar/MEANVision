@@ -6,9 +6,5 @@ app.config(function($routeProvider, $locationProvider) {
 	  requireBase: false
 	});
     $routeProvider
-        .when('/', { templateUrl: '/partials/main', controller: 'mainCtrl'});
-});
-
-app.controller('mainCtrl', function($scope) {
-    $scope.myVar = "Hello Angular, Lets explore the world";
+        .when('/', { templateUrl: '/partials/main', controller: 'mvMainCtrl'});
 });
