@@ -1,74 +1,52 @@
-var express = require('express'),
-  stylus = require('stylus'),
-  logger = require('morgan'),
-  bodyParser = require('body-parser')
-  var mongoose = require('mongoose');
+var express = require('express')
+  	mongoose = require('mongoose'),
+  	passport = require('passport'),
+  	LocalStrategy = require('passport-local').Strategy;
 
 
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var app = express();
 
-function compile(str, path) {
-  return stylus(str).set('filename', path);
-}
+var config = require('./server/config/config')[env];
 
-app.set('views', __dirname + '/server/views');
-app.set('view engine', 'jade');
-app.use(logger('dev'));
+require('./server/config/express')(app, config);
 
+require('./server/config/mongoose')(config);
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-
-app.use(bodyParser.json());
-
-app.use(stylus.middleware(
-  {
-    src: __dirname + '/public',
-    compile: compile
-  }
-));
-app.use(express.static(__dirname + '/public'));
-
-
-if(env === 'development') {
-	mongoose.connect('mongodb://localhost/MEANVision');	
-} else {
-	mongoose.connect('mongodb://maniishkumar:meanvision@ds031651.mongolab.com:31651/meanvision');	
-}
-//mongoose.connect('mongodb://localhost/MEANVision');
-
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error.......'));
-//open the database for once
-db.once('open', function callback(){
-	console.log('MEANVision db opened');
-});
-
-/*var messageSchema = mongoose.Schema({message: String});
-var Message = mongoose.model('Message',  messageSchema);
-
-var mongoMessage;
-Message.findOne().exec(function(err, messageDoc){
-	if(err){
-		console.log(err);
+var User = mongoose.model('User');
+passport.use(new LocalStrategy(
+	function(userName, password, done){
+		User.findOne({userName:userName}).exec(function(err, user){
+			console.log('userName: '+ userName);
+			if(user) {
+				return done(null, user);
+			} else {
+				return done(null, false);
+			}
+		})
 	}
-	mongoMessage = messageDoc.message;
+));
+
+passport.serializeUser(function(user, done){
+	if(user) {
+		done(null, user._id);
+	}
 });
-*/
-app.get('/partials/:partialPath', function(req, res) {
-    res.render('partials/' + req.params.partialPath);
+
+passport.deserializeUser(function(id, done){
+	User.findOne({_id:id}).exec(function(err, user){
+		console.log("deserializeUser");
+		console.log(err);
+		if(user) {
+			return done(null, user);
+		} else {
+			return done(null, false);
+		}
+	});	
 });
+require('./server/config/routes')(app);
 
-app.get('*', function (req, res) {
-	res.render('index'/*, {
-		mongoMessage: mongoMessage
-	}*/);
-})
 
-var port = process.env.PORT || 3003
-
-app.listen(port);
-console.log("MEANVision Server started running on: "+ port);
+app.listen(config.port);
+console.log("MEANVision Server started running on: "+ config.port);
