@@ -17,7 +17,8 @@ module.exports = function(config) {
 		lastName: String,
 		username: String,
 		salt: String,
-		hashed_pwd: String
+		hashed_pwd: String,
+		roles: [String]
 	});
 
 	//Method to validate the user using password
@@ -34,10 +35,10 @@ module.exports = function(config) {
 			var salt, hash;
 			salt = createSalt();
 			hash = hashPwd(salt, 'manish');
-			User.create({firstName:'Manish', lastName:'Kumar', username:'mkumar', salt:salt, hashed_pwd:hash});
+			User.create({firstName:'Manish', lastName:'Kumar', username:'mkumar', salt:salt, hashed_pwd:hash, roles:['admin']});
 			salt = createSalt();
 			hash = hashPwd(salt, 'sunny');
-			User.create({firstName:'Sunny', lastName:'Singh', username:'ssingh', salt:salt, hashed_pwd:hash});
+			User.create({firstName:'Sunny', lastName:'Singh', username:'ssingh', salt:salt, hashed_pwd:hash, roles:[]});
 			salt = createSalt();
 			hash = hashPwd(salt, 'megha');
 			User.create({firstName:'Megha', lastName:'Goyal', username:'mgoyal', salt:salt, hashed_pwd:hash});
